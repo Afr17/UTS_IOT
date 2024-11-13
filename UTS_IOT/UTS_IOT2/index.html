@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Parsing Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data JSON Parsing</h1>
+    <div id="dataDisplay"></div>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('http://127.0.0.1:5000/get_data');
+            const data = await response.json();
+
+            // Display data in HTML as a table
+            document.getElementById("dataDisplay").innerHTML = `
+                <h3>Data Overview:</h3>
+                <table>
+                    <tr>
+                        <th>Suhu Max</th>
+                        <td>${data.suhumax}</td>
+                    </tr>
+                    <tr>
+                        <th>Suhu Min</th>
+                        <td>${data.suhumin}</td>
+                    </tr>
+                    <tr>
+                        <th>Suhu Rata-rata</th>
+                        <td>${data.suhurata.join(', ')}</td>
+                    </tr>
+                </table>
+
+                <h3>Nilai Suhu Max & Humid Max:</h3>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Suhu</th>
+                        <th>Kelembapan</th>
+                        <th>Kecerahan</th>
+                        <th>Timestamp</th>
+                    </tr>
+                    ${data.nilai_suhu_max_humid_max.map(item => `
+                        <tr>
+                            <td>${item.idx}</td>
+                            <td>${item.suhun}</td>
+                            <td>${item.humd}</td>
+                            <td>${item.kecerahan}</td>
+                            <td>${item.timestamp}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+
+                <h3>Month Year Max:</h3>
+                <table>
+                    <tr>
+                        <th>Bulan-Tahun</th>
+                    </tr>
+                    ${data.month_year_max.map(item => `
+                        <tr>
+                            <td>${item.month_year}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
